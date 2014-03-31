@@ -1,0 +1,71 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.codehaus.groovy:groovy-all:2.+'
+  compile 'org.apache.commons:commons-lang3:3.+'
+
+  // compile 'org.springframework:spring-core:3.2.+'
+  // compile 'org.grails:grails:2.2.+'
+
+  compile 'org.apache.lucene:lucene-core:4.7.0'
+  compile 'org.apache.lucene:lucene-queryparser:4.7.0'
+  compile 'org.apache.lucene:lucene-analyzers-common:4.7.0'
+  compile 'org.apache.lucene:lucene-demos:3.0.3'
+
+  testCompile 'junit:junit:4.+'
+  testCompile 'org.spockframework:spock-maven:0.7-groovy-2.0'
+}
+
+task "create-dirs" << {
+  sourceSets*.java.srcDirs*.each { it.mkdirs() }
+  sourceSets*.groovy.srcDirs*.each { it.mkdirs() }
+  sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+task(indexer, dependsOn:'classes', type:JavaExec) {
+  main = 'org.apache.lucene.demo.Indexer'
+  classpath = sourceSets.main.runtimeClasspath
+  args = ['-index', 'index', '-docs', 'data', '-update']
+}
+
+task(searcher, dependsOn:'classes', type:JavaExec) {
+  main = 'org.apache.lucene.demo.Searcher'
+  classpath = sourceSets.main.runtimeClasspath
+  args = ['-index', 'index']
+  if (project.hasProperty('q')) {
+    args = ['-index', 'index', '-query', q]
+  }
+}
+
+// watchdog continuous test plugin
+/*
+buildscript{
+    repositories {
+        maven {
+            url "http://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath group: 'org.bitbucket.grimrose', name: 'watchdog-continuous-test-plugin', version: '1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: 'watchdog-continuous-test'
+
+watchdog {
+    tasks = ['test']
+    dirs = sourceSets*.allSource*.srcDirs.flatten()
+}
+*/
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
