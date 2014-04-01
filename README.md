@@ -23,6 +23,10 @@ test-lucene4
   
   > ant test  # test all
 
+  Go to Windows->Preferences->JUnit
+  
+  Select "Add '-ea' to VM arguments when creating a new Junit launch configuration".
+
   Run individual test in Eclipse.
 
 4. setup for Eclipse
