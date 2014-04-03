@@ -12,21 +12,21 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 public class Indexer {
-	private String indexDir;
-	private Version version;
+	String indexPath;
+	Version version;
 
-	private IndexWriter writer;
+	IndexWriter writer;
 
-	private Document curDoc;
+	Document curDoc;
 
-	public Indexer(String indexDir, Version version) {
-		this.indexDir = indexDir;
+	public Indexer(String indexPath, Version version) {
+		this.indexPath = indexPath;
 		this.version = version;
 	}
 
 	IndexWriter makeIndexWriter() {
 		try {
-			File path = new File(this.indexDir);
+			File path = new File(this.indexPath);
 			Directory dir = FSDirectory.open(path);
 			IndexWriterConfig iwf = new IndexWriterConfig(this.version,
 					new StandardAnalyzer(this.version));
@@ -36,30 +36,36 @@ public class Indexer {
 		}
 	}
 
-	public void prepareIndexWriter() {
+	public Indexer prepareIndexWriter() {
 		assert this.writer == null;
 
 		this.writer = makeIndexWriter();
 
 		assert this.writer != null;
+		
+		return this;
 	}
 
-	public void prepareDocument() {
+	public Indexer prepareDocument() {
 		assert this.curDoc == null;
 
 		this.curDoc = new Document();
 
 		assert this.curDoc != null;
+		
+		return this;
 	}
 
-	public void addField(Field field) {
+	public Indexer addField(Field field) {
 		assert this.curDoc != null;
 		assert field != null;
 
 		this.curDoc.add(field);
+		
+		return this;
 	}
 
-	public void addDocument() {
+	public Indexer addDocument() {
 		assert this.curDoc != null;
 
 		try {
@@ -70,6 +76,8 @@ public class Indexer {
 		}
 
 		assert this.curDoc == null;
+		
+		return this;
 	}
 
 	public void close() {
@@ -85,7 +93,7 @@ public class Indexer {
 		assert this.writer == null;
 	}
 
-	public void deleteAll() {
+	public Indexer deleteAll() {
 		assert this.writer != null;
 
 		try {
@@ -93,5 +101,7 @@ public class Indexer {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
+		return this;
 	}
 }

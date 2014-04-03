@@ -1,8 +1,14 @@
 package org.kang.lucene.core;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.util.Version;
 
 public final class CoreFactory {
@@ -40,14 +46,18 @@ public final class CoreFactory {
 		return type.cast(object);
 	}
 
+	/**
+	 * config
+	 */
 	// @formatter:off
 	static {
 		addConfig(
 				"default"
 				, "path", "index/testindex"
 				, "version", Version.LUCENE_47
-				
-				// add other config here.
+				, "analyzer", new String[] {
+						"org.apache.lucene.analysis.standard.StandardAnalyzer"
+						, "version" }
 				);
 	}
 	// @formatter:on
@@ -72,11 +82,54 @@ public final class CoreFactory {
 		return searcher;
 	}
 
-	public static Indexer newIndexer() {
+	private static <T> T makeInstance(String configName, String[] spec, Class<T> type) {
+		assert spec.length > 0;
+		
+		String className = spec[0];
+		
+		List<Class<?>> argTypes = new ArrayList<Class<?>>();
+		List<Object> argObjects = new ArrayList<Object>();
+		for (int i=1; i<spec.length; i++) {
+			String name = spec[i];
+			Object each = getConfig(configName, name, Object.class);
+			
+			argTypes.add(each.getClass());
+			argObjects.add(each);
+		}
+		
+		try {
+			Class<?> clazz = Class.forName(className);
+			Constructor<?> constructor = clazz.getConstructor(argTypes.toArray(new Class[0]));
+			Object newInstance = constructor.newInstance(argObjects.toArray());
+			
+			return type.cast(newInstance);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static QueryParser newMultiFieldQueryParser(String configName, String... fieldNames) {
+		assert fieldNames.length > 0;
+		
+		Version version = getConfig(configName, "version", Version.class);
+		String[] analyzerSpec = getConfig(configName, "analyzer", String[].class);
+
+		Analyzer analyzer = makeInstance(configName, analyzerSpec, Analyzer.class);
+		MultiFieldQueryParser parser = new MultiFieldQueryParser(version, fieldNames, analyzer);
+		
+		return parser;
+		
+	}
+	
+	public static Indexer newDefaultIndexer() {
 		return newIndexer("default");
 	}
 
-	public static Searcher newSearcher() {
+	public static Searcher newDefaultSearcher() {
 		return newSearcher("default");
+	}
+	
+	public static QueryParser newDefaultMultiFieldQueryParser(String... fieldNames) {
+		return newMultiFieldQueryParser("default", fieldNames);
 	}
 }
