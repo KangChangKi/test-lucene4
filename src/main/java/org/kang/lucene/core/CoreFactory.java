@@ -44,7 +44,7 @@ public final class CoreFactory {
 	static {
 		addConfig(
 				"default"
-				, "path", "/tmp/testindex"
+				, "path", "index/testindex"
 				, "version", Version.LUCENE_47
 				
 				// add other config here.
