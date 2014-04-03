@@ -8,20 +8,24 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.util.Version;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestIndexerAndSearcher {
 
+	@Before
+	public void setUp() {
+		Indexer indexer = CoreFactory.newIndexer();
+		indexer.deleteAll();
+		indexer.close();
+	}
+	
 	@Test
 	public void testIndexingAndSearching() {
-		// TODO: common factory for indexer and searcher.
-
+		
 		// indexing
 		{
-			Indexer indexer = new Indexer("/tmp/testindex", Version.LUCENE_47);
-			indexer.prepareIndexWriter();
-			indexer.deleteAll();
+			Indexer indexer = CoreFactory.newIndexer();
 
 			indexer.prepareDocument();
 			indexer.addField(new TextField("fieldname",
@@ -38,9 +42,7 @@ public class TestIndexerAndSearcher {
 
 		// searching
 		{
-			Searcher searcher = new Searcher("/tmp/testindex");
-			searcher.prepareIndexReader();
-			searcher.prepareIndexSearcher();
+			Searcher searcher = CoreFactory.newSearcher();
 
 			Query query = new TermQuery(new Term("fieldname", "text"));
 			TopDocs hits = searcher.search(query, null, 10);
