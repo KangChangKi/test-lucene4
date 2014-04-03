@@ -2,6 +2,7 @@ package org.kang.lucene.core;
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -106,6 +107,7 @@ public class Searcher {
 		Document document = getDocument(hits, i);
 		assert document != null;
 
-		return document.get(fieldName);
+		String result = document.get(fieldName);
+		return StringUtils.defaultString(result, "");
 	}
 }
