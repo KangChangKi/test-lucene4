@@ -13,10 +13,18 @@ dependencies {
   // compile 'org.springframework:spring-core:3.2.+'
   // compile 'org.grails:grails:2.2.+'
 
+  // test
+  testCompile 'org.apache.lucene:lucene-test-framework:4.7.0'
+  
+  // must
   compile 'org.apache.lucene:lucene-core:4.7.0'
   compile 'org.apache.lucene:lucene-queryparser:4.7.0'
   compile 'org.apache.lucene:lucene-analyzers-common:4.7.0'
+  compile 'org.apache.lucene:lucene-facet:4.7.0'
+
+  // optional
   compile 'org.apache.lucene:lucene-demos:3.0.3'
+  compile 'org.apache.lucene:lucene-memory:4.7.0'
 
   testCompile 'junit:junit:4.+'
   testCompile 'org.spockframework:spock-maven:0.7-groovy-2.0'
