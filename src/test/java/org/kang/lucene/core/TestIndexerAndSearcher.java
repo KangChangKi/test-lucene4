@@ -3,6 +3,7 @@ package org.kang.lucene.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -11,13 +12,18 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.CharBuffer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.apache.lucene.analysis.util.CharTokenizer;
+import org.apache.lucene.analysis.util.CharacterUtils;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.Term;
@@ -96,7 +102,7 @@ public class TestIndexerAndSearcher {
 		assertTotalHitCount(1);
 		assertField("title title1", 0, "head");
 	}
-	
+
 	private void endOfRead(CharBuffer cbuff) {
 		if (cbuff.remaining() > 0) {
 			cbuff.compact();
@@ -109,16 +115,17 @@ public class TestIndexerAndSearcher {
 	private boolean isBlackWord(char c) {
 		return c == 'B';
 	}
-	
+
 	private boolean isWhiteWord(char c) {
 		return Character.isLetterOrDigit(c);
 	}
-	
+
 	// TODO: handle character types. ex) 'a3' => 'a', '3'
 	// it should use look ahead 1 character.
-	private void getToken(Reader input, CharBuffer cbuff, StringBuffer strbuff) throws Exception {
+	private void getToken(Reader input, CharBuffer cbuff, StringBuffer strbuff)
+			throws Exception {
 		strbuff.delete(0, strbuff.length());
-		
+
 		int res = input.read(cbuff);
 		if (res == -1) {
 			return;
@@ -134,7 +141,7 @@ public class TestIndexerAndSearcher {
 				}
 				cbuff.flip();
 			}
-			
+
 			char c = cbuff.get();
 			if (c == -1) {
 				endOfRead(cbuff);
@@ -158,270 +165,136 @@ public class TestIndexerAndSearcher {
 			}
 		}
 	}
-	
-	@Test
-	public void testTokenizer_1() throws Exception {
-		StringReader input = new StringReader("aaa.#@?한글   \n   \t  ccc");
-		
-		final int bufferSize = 2;
-		CharBuffer cbuff = CharBuffer.allocate(bufferSize);
-		assertEquals(bufferSize, cbuff.capacity());
-		assertEquals(bufferSize, cbuff.limit());
-		assertEquals(0, cbuff.position());
 
-		StringBuffer strbuff = new StringBuffer();
-		
-		getToken(input, cbuff, strbuff);
-		assertEquals("aaa", strbuff.toString());
+	class CustomCharTokenizer1 extends CharTokenizer {
 
-		getToken(input, cbuff, strbuff);
-		assertEquals("한글", strbuff.toString());
+		public CustomCharTokenizer1(Version matchVersion, Reader input) {
+			super(matchVersion, input);
+		}
 
-		getToken(input, cbuff, strbuff);
-		assertEquals("ccc", strbuff.toString());
+		@Override
+		protected boolean isTokenChar(int c) {
+			return Character.isAlphabetic(c);
+		}
 
-		getToken(input, cbuff, strbuff);
-		assertEquals("", strbuff.toString());
+		@Override
+		protected int normalize(int c) {
+			return Character.toLowerCase(c);
+		}
 	}
 
 	@Test
-	public void testTokenizer_2() throws Exception {		
-		final class SomeTokenizer extends Tokenizer {
+	public void testTokenizer_alphabets() throws Exception {
+		// look into CharTokenizer source code in advance.
 
-			// register attributes to the thread local.
-			private CharTermAttribute charTermAtt = addAttribute(CharTermAttribute.class);
-			private OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
-			private TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
-			private PositionIncrementAttribute positionIncAtt = addAttribute(PositionIncrementAttribute.class);
+		Reader reader = new StringReader("AAA12 한글 CCC");
+		Tokenizer t = new CustomCharTokenizer1(Version.LUCENE_47, reader) {
 
-			public static final int BUFFER_CAPACITY = 3000; // for whole content.
-			CharBuffer cbuff = CharBuffer.allocate(BUFFER_CAPACITY);
-			int contentLength = 0;
-			StringBuffer strbuff = new StringBuffer(); // for each token.
-			
-			protected SomeTokenizer(Reader input) {
-				super(input); // this.input
-			}
-			
 			@Override
-			public void reset() throws IOException {
-				super.reset();
-				
-				contentLength = 0;
+			protected boolean isTokenChar(int c) {
+				return Character.isAlphabetic(c);
 			}
-			
+
 			@Override
-			public boolean incrementToken() throws IOException {
-				clearAttributes();
+			protected int normalize(int c) {
+				return Character.toLowerCase(c);
+			}
+		};
 
-				getToken(input, cbuff, strbuff); 
-				charTermAtt.append(strbuff.toString());
-				
-				return strbuff.length() != 0;
-			}
+		CharTermAttribute charTermAtt;
+		t.reset();
 
-			private void endOfRead(CharBuffer cbuff) {
-				if (cbuff.remaining() > 0) {
-					cbuff.compact();
-				} else {
-					cbuff.clear();
-				}
-			}
-
-			// TODO: introduce strategy patterns.
-			private boolean isBlackWord(char c) {
-				return c == 'B';
-			}
-			
-			private boolean isWhiteWord(char c) {
-				return Character.isLetterOrDigit(c);
-			}
-			
-			// TODO: handle character types. ex) 'a3' => 'a', '3'
-			// it should use look ahead 1 character.
-			private void getToken(Reader input, CharBuffer cbuff, StringBuffer strbuff) throws IOException {
-				strbuff.delete(0, strbuff.length());
-				
-				int res = input.read(cbuff);
-				if (res == -1) {
-					// read all already.
-				} else {
-					contentLength = res;
-				}
-				cbuff.flip();
-
-				while (true) {
-					char c = cbuff.get();
-					--contentLength;
-					
-					if (c == -1) {
-						endOfRead(cbuff);
-						return;
-					} else if (isBlackWord(c)) {
-						if (strbuff.length() == 0) {
-							// skip
-						} else {
-							endOfRead(cbuff);
-							return;
-						}
-					} else if (isWhiteWord(c)) {
-						strbuff.append(c);
-					} else { // handles like black word.
-						if (strbuff.length() == 0) {
-							// skip
-						} else {
-							endOfRead(cbuff);
-							return;
-						}
-					}
-				}
-			}
-		}
-		
-		Reader input = new StringReader("aaa bbb");
-		SomeTokenizer t = new SomeTokenizer(input);
-		
-		CharTermAttribute charTermAtt = t.getAttribute(CharTermAttribute.class);
-		OffsetAttribute offsetAtt = t.getAttribute(OffsetAttribute.class);
-		TypeAttribute typeAtt = t.getAttribute(TypeAttribute.class);
-		PositionIncrementAttribute positionIncAtt = t.getAttribute(PositionIncrementAttribute.class);
-		
-		t.reset(); // stage input reader. 
-		
 		assertTrue(t.incrementToken());
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
 		assertEquals("aaa", charTermAtt.toString());
-		
+
 		assertTrue(t.incrementToken());
-		assertEquals("bbb", charTermAtt.toString());
-		
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
+		assertEquals("한글", charTermAtt.toString());
+
 		assertTrue(t.incrementToken());
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
+		assertEquals("ccc", charTermAtt.toString());
+
+		assertFalse("-->", t.incrementToken());
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
 		assertEquals("", charTermAtt.toString());
+
+		t.close();
+	}
+
+	class CustomCharTokenizer2 extends CharTokenizer {
+
+		public CustomCharTokenizer2(Version matchVersion, Reader input) {
+			super(matchVersion, input);
+		}
+
+		@Override
+		protected boolean isTokenChar(int c) {
+			return !Character.isWhitespace(c);
+		}
+
+		@Override
+		protected int normalize(int c) {
+			return Character.toLowerCase(c);
+		}
 	}
 	
-	@Ignore
 	@Test
-	public void testTokenizer_3() throws Exception {
-		final class SomeTokenizer extends Tokenizer {
+	public void testTokenizer_alphanumberics() throws Exception {
+		// look into CharTokenizer source code in advance.
 
-			private CharBuffer cbuff = CharBuffer.allocate(512);
+		Reader reader = new StringReader("AAA12 한글 CCC");
+		CharTokenizer t = new CustomCharTokenizer2(Version.LUCENE_47, reader);
 
-			// register attributes to the thread local.
-			private CharTermAttribute charTermAtt = addAttribute(CharTermAttribute.class);
-			private OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
-			private TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
-			private PositionIncrementAttribute positionIncAtt = addAttribute(PositionIncrementAttribute.class);
+		CharTermAttribute charTermAtt;
+		t.reset();
 
-			protected SomeTokenizer(Reader input) {
-				super(input); // this.input
-			}
+		assertTrue(t.incrementToken());
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
+		assertEquals("aaa12", charTermAtt.toString());
 
-			@Override
-			public boolean incrementToken() throws IOException {
-				clearAttributes();
+		assertTrue(t.incrementToken());
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
+		assertEquals("한글", charTermAtt.toString());
 
-				input.read(cbuff);
+		assertTrue(t.incrementToken());
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
+		assertEquals("ccc", charTermAtt.toString());
 
-				cbuff.flip();
+		assertFalse("-->", t.incrementToken());
+		charTermAtt = t.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
 
-				char c = cbuff.get();
-				if (Character.isAlphabetic(c)) {
-
-				} else {
-
-				}
-
-				endOfReading();
-
-				return false;
-			}
-
-			private boolean hasNext() {
-				return cbuff.position() < cbuff.limit();
-			}
-
-			private void endOfReading() {
-				if (cbuff.position() == cbuff.limit()) {
-					cbuff.clear();
-				} else {
-					cbuff.compact();
-				}
-			}
-		}
-
+		t.close();
 	}
 
 	@Test
-	public void testSearchingWithCustomAnalyzer() throws Exception {
-		final Version ver = Version.LUCENE_47;
+	public void testTokenFilter() throws Exception {
+		Reader reader = new StringReader("AAA12 한글 CCC");
+		CharTokenizer t = new CustomCharTokenizer2(Version.LUCENE_47, reader);
+		TokenFilter f = new LowerCaseFilter(Version.LUCENE_47, t);
+		
+		CharTermAttribute charTermAtt;
+		f.reset();
 
-		final class FooTokenizer extends Tokenizer {
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("aaa12", charTermAtt.toString());
 
-			protected FooTokenizer(Reader input) {
-				super(input);
-			}
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("한글", charTermAtt.toString());
 
-			@Override
-			public boolean incrementToken() throws IOException {
-				if (input.read() != -1) {
-					return true;
-				}
-				return false;
-			}
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("ccc", charTermAtt.toString());
 
-		}
+		assertFalse("-->", f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
 
-		final class FooFilter extends TokenStream {
-
-			private Tokenizer source;
-
-			public FooFilter(Tokenizer source) {
-				this.source = source;
-			}
-
-			@Override
-			public boolean incrementToken() throws IOException {
-				return source.incrementToken();
-			}
-
-		}
-
-		class CustomAnalyzer extends Analyzer {
-
-			private TokenStream tokenStream;
-
-			public CustomAnalyzer() {
-				super();
-			}
-
-			@Override
-			protected TokenStreamComponents createComponents(String fieldName,
-					Reader reader) {
-				Tokenizer source = new FooTokenizer(reader);
-				TokenStream filter = new FooFilter(source);
-				return new TokenStreamComponents(source, filter);
-			}
-
-		}
-		;
-
-		// Analyzer a = new CustomAnalyzer();
-		// QueryParser p = new QueryParser(ver, "head", a);
-		// assertEquals("head:keyword", p.parse("keyword3").toString());
-
-		QueryParser parser = new QueryParser(ver, "head", new CustomAnalyzer());
-
-		query = parser.parse("title");
-		assertEquals("head:title", query.toString());
-		hits = searcher.search(query, 10);
-		assertTotalHitCount(2);
-		assertField("title title1", 0, "head");
-		assertField("title title2", 1, "head");
-
-		query = parser.parse("title AND title1");
-		assertEquals("+head:title +head:title1", query.toString());
-		hits = searcher.search(query, 10);
-		assertTotalHitCount(1);
-		assertField("title title1", 0, "head");
+		f.close();
 	}
 
 	public void assertTotalHitCount(int expected) {
