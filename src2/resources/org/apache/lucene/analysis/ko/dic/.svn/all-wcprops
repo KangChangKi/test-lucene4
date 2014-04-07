@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/repos/asf/!svn/ver/1536234/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic
+END
+words.dat
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/repos/asf/!svn/ver/1534472/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic/words.dat
+END
+josa.dic
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/repos/asf/!svn/ver/1533517/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic/josa.dic
+END
+hanja.dat
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/repos/asf/!svn/ver/1533782/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic/hanja.dat
+END
+eomi.dic
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/repos/asf/!svn/ver/1533517/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic/eomi.dic
+END
+syllable.dat
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/repos/asf/!svn/ver/1533813/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic/syllable.dat
+END
+hanja.idx
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/repos/asf/!svn/ver/1533782/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic/hanja.idx
+END
+uncompounds.dic
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/asf/!svn/ver/1485269/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/org/apache/lucene/analysis/ko/dic/uncompounds.dic
+END

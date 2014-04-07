@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/repos/asf/!svn/ver/1536244/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph
+END
+ConstraintUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/repos/asf/!svn/ver/1534029/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/ConstraintUtil.java
+END
+PatternConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/repos/asf/!svn/ver/1534021/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/PatternConstants.java
+END
+MorphAnalyzer.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/asf/!svn/ver/1536244/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/MorphAnalyzer.java
+END
+AnalysisOutput.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/repos/asf/!svn/ver/1536233/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/AnalysisOutput.java
+END
+WSOutput.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/repos/asf/!svn/ver/1536244/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/WSOutput.java
+END
+NounUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/repos/asf/!svn/ver/1536214/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/NounUtil.java
+END
+CompoundNounAnalyzer.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/repos/asf/!svn/ver/1536235/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/CompoundNounAnalyzer.java
+END
+MorphUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/repos/asf/!svn/ver/1534029/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/MorphUtil.java
+END
+EomiUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/repos/asf/!svn/ver/1536244/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/EomiUtil.java
+END
+IrregularUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/asf/!svn/ver/1534030/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/IrregularUtil.java
+END
+AnalysisOutputComparator.java
+K 25
+svn:wc:ra_dav:version-url
+V 157
+/repos/asf/!svn/ver/1536214/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/AnalysisOutputComparator.java
+END
+WSOuputComparator.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/repos/asf/!svn/ver/1533835/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/WSOuputComparator.java
+END
+WordSpaceAnalyzer.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/repos/asf/!svn/ver/1536234/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/WordSpaceAnalyzer.java
+END
+VerbUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/repos/asf/!svn/ver/1536214/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/morph/VerbUtil.java
+END

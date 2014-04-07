@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/repos/asf/!svn/ver/1485269/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/META-INF/services
+END
+org.apache.lucene.analysis.util.TokenizerFactory
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/repos/asf/!svn/ver/1485269/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/META-INF/services/org.apache.lucene.analysis.util.TokenizerFactory
+END
+org.apache.lucene.analysis.util.TokenFilterFactory
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/repos/asf/!svn/ver/1485269/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/resources/META-INF/services/org.apache.lucene.analysis.util.TokenFilterFactory
+END

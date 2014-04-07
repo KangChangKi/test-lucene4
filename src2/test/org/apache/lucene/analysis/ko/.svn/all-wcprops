@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/repos/asf/!svn/ver/1536233/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko
+END
+TestKoreanAnalyzer.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/repos/asf/!svn/ver/1534473/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/TestKoreanAnalyzer.java
+END
+wiki_sentence.txt
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/repos/asf/!svn/ver/1533549/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/wiki_sentence.txt
+END
+TestCoverageHack.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/repos/asf/!svn/ver/1533549/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/TestCoverageHack.java
+END
+TestKoreanTokenizerFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/repos/asf/!svn/ver/1485269/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/TestKoreanTokenizerFactory.java
+END
+wiki_results.txt
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/repos/asf/!svn/ver/1534473/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/wiki_results.txt
+END
+TestMorphologicalAnalyzer.java
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/repos/asf/!svn/ver/1536214/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/TestMorphologicalAnalyzer.java
+END
+TestCompoundSegment.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/asf/!svn/ver/1536233/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/TestCompoundSegment.java
+END

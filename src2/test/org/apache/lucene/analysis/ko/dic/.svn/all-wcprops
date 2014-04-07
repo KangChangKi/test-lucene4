@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/repos/asf/!svn/ver/1533838/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/dic
+END
+TestSyllableFeatures.java
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/repos/asf/!svn/ver/1533838/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/dic/TestSyllableFeatures.java
+END
+TestHanjaMapper.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/asf/!svn/ver/1533838/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/test/org/apache/lucene/analysis/ko/dic/TestHanjaMapper.java
+END

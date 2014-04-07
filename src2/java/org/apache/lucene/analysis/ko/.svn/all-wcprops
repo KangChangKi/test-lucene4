@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/repos/asf/!svn/ver/1536244/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko
+END
+KoreanFilterFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/asf/!svn/ver/1533846/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/KoreanFilterFactory.java
+END
+KoreanFilter.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/repos/asf/!svn/ver/1536233/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/KoreanFilter.java
+END
+KoreanAnalyzer.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/repos/asf/!svn/ver/1534473/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/KoreanAnalyzer.java
+END
+KoreanTokenizerImpl.jflex
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/repos/asf/!svn/ver/1532677/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/KoreanTokenizerImpl.jflex
+END
+KoreanTokenizerFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/repos/asf/!svn/ver/1533846/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/KoreanTokenizerFactory.java
+END
+KoreanTokenizer.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/repos/asf/!svn/ver/1534473/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/KoreanTokenizer.java
+END
+KoreanTokenizerImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/asf/!svn/ver/1532677/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/KoreanTokenizerImpl.java
+END

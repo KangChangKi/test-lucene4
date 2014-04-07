@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/repos/asf/!svn/ver/1536244/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic
+END
+DictionaryResources.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/repos/asf/!svn/ver/1536234/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/DictionaryResources.java
+END
+HangulDictionary.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/repos/asf/!svn/ver/1536235/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/HangulDictionary.java
+END
+LineProcessor.java
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/repos/asf/!svn/ver/1533382/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/LineProcessor.java
+END
+HanjaMapper.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/repos/asf/!svn/ver/1533838/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/HanjaMapper.java
+END
+SyllableFeatures.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/repos/asf/!svn/ver/1533838/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/SyllableFeatures.java
+END
+ByteOutputs.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/repos/asf/!svn/ver/1534115/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/ByteOutputs.java
+END
+WordEntry.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/repos/asf/!svn/ver/1536231/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/WordEntry.java
+END
+DictionaryUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/repos/asf/!svn/ver/1536244/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/DictionaryUtil.java
+END
+CompoundEntry.java
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/repos/asf/!svn/ver/1534030/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/java/org/apache/lucene/analysis/ko/dic/CompoundEntry.java
+END

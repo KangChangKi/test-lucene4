@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/repos/asf/!svn/ver/1536234/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/tools/java/org/apache/lucene/analysis/ko
+END
+hanjamap.license.txt
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/repos/asf/!svn/ver/1533329/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/tools/java/org/apache/lucene/analysis/ko/hanjamap.license.txt
+END
+GenerateHanjaMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/repos/asf/!svn/ver/1533329/lucene/dev/branches/lucene4956/lucene/analysis/arirang/src/tools/java/org/apache/lucene/analysis/ko/GenerateHanjaMap.java
+END
