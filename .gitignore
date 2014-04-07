@@ -3,6 +3,7 @@ index
 .settings
 .classpath
 .project
+.svn
 
 *.class
 
