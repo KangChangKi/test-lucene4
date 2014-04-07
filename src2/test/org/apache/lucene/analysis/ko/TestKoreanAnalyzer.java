@@ -26,14 +26,14 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
-
+import org.apache.lucene.util.Version;
 import org.junit.Ignore;
 
 public class TestKoreanAnalyzer extends BaseTokenStreamTestCase {
 
 
   public void testBasics() throws IOException {
-    assertAnalyzesTo(new KoreanAnalyzer(TEST_VERSION_CURRENT), "자바로 전부 제작된 텍스트 검색 엔진 라이브러리",
+    assertAnalyzesTo(new KoreanAnalyzer(Version.LUCENE_47), "자바로 전부 제작된 텍스트 검색 엔진 라이브러리",
         new String[]{"자바", "전부", "제작", "텍스트", "검색", "엔진", "라이브러리"},
         new int[]{0, 4, 7, 11, 15, 18, 21},
         new int[]{2, 6, 9, 14, 17, 20, 26},
@@ -43,14 +43,14 @@ public class TestKoreanAnalyzer extends BaseTokenStreamTestCase {
   
   // don't know why we have this, but it should at least do washington dc, not washington d.
   public void testAcronym() throws IOException {
-    assertAnalyzesTo(new KoreanAnalyzer(TEST_VERSION_CURRENT), "Washington D.C.",
+    assertAnalyzesTo(new KoreanAnalyzer(Version.LUCENE_47), "Washington D.C.",
         new String[] { "washington", "dc" }
     );
   }
 
   public void testCompoundNoun() throws IOException {
     
-    KoreanAnalyzer analyzer = new KoreanAnalyzer(TEST_VERSION_CURRENT);
+    KoreanAnalyzer analyzer = new KoreanAnalyzer(Version.LUCENE_47);
     analyzer.setOriginCNoun(true);
     analyzer.setHasOrigin(false);
     
@@ -66,7 +66,7 @@ public class TestKoreanAnalyzer extends BaseTokenStreamTestCase {
   @Ignore("TODO: Known issue for Soomyung to look into")
   public void testCompoundNoun1() throws IOException {
     
-    KoreanAnalyzer analyzer = new KoreanAnalyzer(TEST_VERSION_CURRENT);
+    KoreanAnalyzer analyzer = new KoreanAnalyzer(Version.LUCENE_47);
     analyzer.setOriginCNoun(false);
     
     assertAnalyzesTo(analyzer, "빅데이터",
@@ -88,14 +88,14 @@ public class TestKoreanAnalyzer extends BaseTokenStreamTestCase {
    */  
 //  public void testRandom() throws IOException {
 //    Random random = random();
-//    final Analyzer a = new KoreanAnalyzer(TEST_VERSION_CURRENT);    
+//    final Analyzer a = new KoreanAnalyzer(Version.LUCENE_47);    
 //    checkRandomData(random, a, atLeast(10000));
 //  }
 
 
   public void testOutput() throws IOException {
     String korean = "자바로 전부 제작된 텍스트 검색 엔진 라이브러리";
-    Analyzer analyzer = new KoreanAnalyzer(TEST_VERSION_CURRENT);
+    Analyzer analyzer = new KoreanAnalyzer(Version.LUCENE_47);
 
     TokenStream stream = analyzer.tokenStream("dummy", korean);
     stream.reset();
