@@ -1,29 +1,18 @@
 package org.kang.lucene.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
 import java.nio.CharBuffer;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenFilter;
-import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.UpperCaseFilter;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.analysis.util.CharTokenizer;
-import org.apache.lucene.analysis.util.CharacterUtils;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.Term;
@@ -34,7 +23,6 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.util.Version;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestIndexerAndSearcher {
@@ -273,14 +261,14 @@ public class TestIndexerAndSearcher {
 	public void testTokenFilter() throws Exception {
 		Reader reader = new StringReader("AAA12 한글 CCC");
 		CharTokenizer t = new CustomCharTokenizer2(Version.LUCENE_47, reader);
-		TokenFilter f = new LowerCaseFilter(Version.LUCENE_47, t);
+		TokenFilter f = new UpperCaseFilter(Version.LUCENE_47, t);
 		
 		CharTermAttribute charTermAtt;
 		f.reset();
 
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
-		assertEquals("aaa12", charTermAtt.toString());
+		assertEquals("AAA12", charTermAtt.toString());
 
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
@@ -288,7 +276,7 @@ public class TestIndexerAndSearcher {
 
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
-		assertEquals("ccc", charTermAtt.toString());
+		assertEquals("CCC", charTermAtt.toString());
 
 		assertFalse("-->", f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
@@ -296,7 +284,7 @@ public class TestIndexerAndSearcher {
 
 		f.close();
 	}
-
+	
 	public void assertTotalHitCount(int expected) {
 		assertEquals(expected, hits.totalHits);
 	}
