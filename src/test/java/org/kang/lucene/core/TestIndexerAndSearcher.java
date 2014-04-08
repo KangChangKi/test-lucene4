@@ -10,7 +10,10 @@ import java.nio.CharBuffer;
 
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.cjk.CJKBigramFilter;
+import org.apache.lucene.analysis.cjk.CJKWidthFilter;
 import org.apache.lucene.analysis.core.UpperCaseFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.util.CharTokenizer;
 import org.apache.lucene.document.Field.Store;
@@ -282,6 +285,58 @@ public class TestIndexerAndSearcher {
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("", charTermAtt.toString());
 
+		f.close();
+	}
+	
+	@Test
+	public void testCJKBigramFilter_1() throws Exception {
+		Reader reader = new StringReader("ひらがな");
+		Tokenizer t = new StandardTokenizer(Version.LUCENE_47, reader);
+		TokenFilter f = new CJKBigramFilter(t);
+		
+		CharTermAttribute charTermAtt;
+		f.reset();
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("ひら", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("らが", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("がな", charTermAtt.toString());
+		
+		assertFalse(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
+		
+		f.close();
+	}
+	
+	@Test
+	public void testCJKBigramFilter_2() throws Exception {
+		Reader reader = new StringReader("지하철");
+		Tokenizer t = new StandardTokenizer(Version.LUCENE_47, reader);
+		TokenFilter f = new CJKBigramFilter(t);
+		
+		CharTermAttribute charTermAtt;
+		f.reset();
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("지하", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("하철", charTermAtt.toString());
+		
+		assertFalse(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
+		
 		f.close();
 	}
 	
