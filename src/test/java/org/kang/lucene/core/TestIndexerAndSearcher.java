@@ -7,14 +7,20 @@ import static org.junit.Assert.assertTrue;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.cjk.CJKBigramFilter;
-import org.apache.lucene.analysis.cjk.CJKWidthFilter;
 import org.apache.lucene.analysis.core.UpperCaseFilter;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.util.CharTokenizer;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.TextField;
@@ -338,6 +344,30 @@ public class TestIndexerAndSearcher {
 		assertEquals("", charTermAtt.toString());
 		
 		f.close();
+	}
+
+	@Test
+	public void testStandardAnalyzer() throws Exception {
+		Analyzer a = new StandardAnalyzer(Version.LUCENE_47);
+		TokenStream ts = a.tokenStream("contents", new StringReader("aaa 공항철도"));
+		CharTermAttribute cta = ts.addAttribute(CharTermAttribute.class);
+		PositionIncrementAttribute pia = ts.addAttribute(PositionIncrementAttribute.class);
+		
+		ts.reset();
+		
+		List<String> list = new ArrayList<String>();
+		List<Object> list2 = new ArrayList<Object>();
+		while (ts.incrementToken()) {
+			list.add(cta.toString());
+			list2.add(pia.getPositionIncrement());
+		}
+		
+		String result = StringUtils.join(list, ",");
+		String result2 = StringUtils.join(list2, ",");
+		assertEquals("aaa,공항철도", result);
+		assertEquals("1,1", result2);
+		
+		a.close();
 	}
 	
 	public void assertTotalHitCount(int expected) {
