@@ -23,7 +23,9 @@ import java.util.HashMap;
 
 import org.apache.lucene.analysis.BaseTokenStreamTestCase;
 import org.apache.lucene.analysis.TokenStream;
+import org.junit.Ignore;
 
+@Ignore
 public class TestKoreanTokenizerFactory extends BaseTokenStreamTestCase {
 
   public void testBasic() throws IOException {

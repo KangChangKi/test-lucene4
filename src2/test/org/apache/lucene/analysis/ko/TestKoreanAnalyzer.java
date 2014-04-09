@@ -29,6 +29,7 @@ import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.util.Version;
 import org.junit.Ignore;
 
+@Ignore
 public class TestKoreanAnalyzer extends BaseTokenStreamTestCase {
 
 

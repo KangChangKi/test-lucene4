@@ -30,10 +30,10 @@ import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.YNPMA;
 import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.YNPNA;
 import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.hasFeature;
 
-import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.util.LuceneTestCase;
-import org.junit.Before;
+import org.junit.Ignore;
 
+@Ignore
 public class TestSyllableFeatures extends LuceneTestCase {
 
   public void testGa() {

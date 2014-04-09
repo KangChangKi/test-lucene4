@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import org.apache.commons.codec.language.Metaphone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenFilter;
@@ -21,7 +22,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.cjk.CJKBigramFilter;
 import org.apache.lucene.analysis.core.UpperCaseFilter;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter;
 import org.apache.lucene.analysis.ngram.NGramTokenFilter;
@@ -30,13 +30,12 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.analysis.util.CharTokenizer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -741,6 +740,63 @@ public class TestIndexerAndSearcher {
 		assertFalse("-->", f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("", charTermAtt.toString());
+
+		f.close();
+	}
+
+	public static class MetaphoneReplacementFilter extends TokenFilter {
+		public static final String METAPHONE = "metaphone";
+
+		private Metaphone metaphoner = new Metaphone();
+		private CharTermAttribute termAttr;
+		private TypeAttribute typeAttr;
+
+		public MetaphoneReplacementFilter(TokenStream input) {
+			super(input);
+			termAttr = addAttribute(CharTermAttribute.class);
+			typeAttr = addAttribute(TypeAttribute.class);
+		}
+
+		public boolean incrementToken() throws IOException {
+			if (!input.incrementToken())
+				return false;
+
+			String encoded;
+			encoded = metaphoner.encode(termAttr.toString());
+			termAttr.setEmpty().append(encoded);
+			typeAttr.setType(METAPHONE);
+			return true;
+		}
+	}
+
+	@Test
+	public void testMetaphoneReplacementFilter() throws Exception {
+		String s = "brown fox";
+		Reader reader = new StringReader(s);
+		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
+		TokenFilter f = new MetaphoneReplacementFilter(t);
+
+		CharTermAttribute charTermAtt;
+		TypeAttribute typeAtt;
+		f.reset();
+
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		typeAtt = f.getAttribute(TypeAttribute.class);
+		assertEquals("BRN", charTermAtt.toString());
+		assertEquals(MetaphoneReplacementFilter.METAPHONE, typeAtt.type());
+
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		typeAtt = f.getAttribute(TypeAttribute.class);
+		assertEquals("FKS", charTermAtt.toString());
+		assertEquals(MetaphoneReplacementFilter.METAPHONE, typeAtt.type());
+
+		assertFalse("-->", f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		typeAtt = f.getAttribute(TypeAttribute.class);
+		assertEquals("", charTermAtt.toString());
+		assertEquals(TypeAttribute.DEFAULT_TYPE, typeAtt.type());
 
 		f.close();
 	}

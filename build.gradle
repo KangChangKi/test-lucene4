@@ -21,6 +21,7 @@ dependencies {
   compile 'org.apache.lucene:lucene-queryparser:4.7.0'
   compile 'org.apache.lucene:lucene-analyzers-common:4.7.0'
   compile 'org.apache.lucene:lucene-facet:4.7.0'
+  compile 'commons-codec:commons-codec:1.9'
 
   // optional
   compile 'org.apache.lucene:lucene-demos:3.0.3'
