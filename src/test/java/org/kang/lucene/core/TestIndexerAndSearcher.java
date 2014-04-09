@@ -21,6 +21,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.cjk.CJKBigramFilter;
 import org.apache.lucene.analysis.core.UpperCaseFilter;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter;
 import org.apache.lucene.analysis.ngram.NGramTokenFilter;
@@ -31,9 +32,11 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.util.CharTokenizer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -540,11 +543,12 @@ public class TestIndexerAndSearcher {
 
 	// 1. remove stop words
 	// 2. remove prefixes and suffixes
-	// 3. apply EdgeNGramFilter(including original word) or morphological analysis
+	// 3. apply EdgeNGramFilter(including original word) or morphological
+	// analysis
 	// 4. apply synonyms
 	// 5. apply sound-like filter(FuzzyFilter)
 	// 6. map consonants
-	
+
 	@Ignore
 	@Test
 	public void testSynonymFilter_2() throws Exception {
@@ -583,13 +587,13 @@ public class TestIndexerAndSearcher {
 
 		f.close();
 	}
-	
+
 	@Test
 	public void testSnowball_1() throws Exception {
 		Reader reader = new StringReader("stemming algorithms");
 		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
 		SnowballFilter f = new SnowballFilter(t, "English");
-		
+
 		CharTermAttribute charTermAtt;
 		f.reset();
 
@@ -604,38 +608,29 @@ public class TestIndexerAndSearcher {
 		assertFalse("-->", f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("", charTermAtt.toString());
-		
+
 		f.close();
 	}
-	
+
 	@Test
 	public void testSnowball_2() throws Exception {
 		Reader reader = new StringReader("뛰어 갈까");
 		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
-		
-		/* from EnglishSnowballFilter class:
-		  @Override
-		  public final boolean incrementToken() throws IOException {
-		    if (input.incrementToken()) {
-		      if (!keywordAttr.isKeyword()) {
-		        char termBuffer[] = termAtt.buffer();
-		        final int length = termAtt.length();
-		        stemmer.setCurrent(termBuffer, length);
-		        stemmer.stem();
-		        final char finalTerm[] = stemmer.getCurrentBuffer();
-		        final int newLength = stemmer.getCurrentBufferLength();
-		        if (finalTerm != termBuffer)
-		          termAtt.copyBuffer(finalTerm, 0, newLength);
-		        else
-		          termAtt.setLength(newLength);
-		      }
-		      return true;
-		    } else {
-		      return false;
-		    }
-		  }
+
+		/*
+		 * from EnglishSnowballFilter class:
+		 * 
+		 * @Override public final boolean incrementToken() throws IOException {
+		 * if (input.incrementToken()) { if (!keywordAttr.isKeyword()) { char
+		 * termBuffer[] = termAtt.buffer(); final int length = termAtt.length();
+		 * stemmer.setCurrent(termBuffer, length); stemmer.stem(); final char
+		 * finalTerm[] = stemmer.getCurrentBuffer(); final int newLength =
+		 * stemmer.getCurrentBufferLength(); if (finalTerm != termBuffer)
+		 * termAtt.copyBuffer(finalTerm, 0, newLength); else
+		 * termAtt.setLength(newLength); } return true; } else { return false; }
+		 * }
 		 */
-		
+
 		SnowballProgram stemmer = new SnowballProgram() {
 
 			@Override
@@ -650,25 +645,25 @@ public class TestIndexerAndSearcher {
 
 				return false;
 			}
-			
+
 		};
 		SnowballFilter f = new SnowballFilter(t, stemmer);
-		
+
 		CharTermAttribute charTermAtt;
 		f.reset();
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("뛰다", charTermAtt.toString());
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("가다", charTermAtt.toString());
-		
+
 		assertFalse("-->", f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("", charTermAtt.toString());
-		
+
 		f.close();
 	}
 
@@ -679,42 +674,43 @@ public class TestIndexerAndSearcher {
 		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
 		int minGram = 2;
 		int maxGram = s.length();
-		TokenFilter f = new NGramTokenFilter(Version.LUCENE_47, t, minGram, maxGram);
-		
+		TokenFilter f = new NGramTokenFilter(Version.LUCENE_47, t, minGram,
+				maxGram);
+
 		CharTermAttribute charTermAtt;
 		f.reset();
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("국제", charTermAtt.toString()); // <-- correct.
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("국제공", charTermAtt.toString());
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("국제공항", charTermAtt.toString()); // <-- correct.
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("제공", charTermAtt.toString());
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("제공항", charTermAtt.toString());
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("공항", charTermAtt.toString()); // <-- correct.
-		
+
 		assertFalse("-->", f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("", charTermAtt.toString());
-		
+
 		f.close();
 	}
-	
+
 	@Test
 	public void testEdgeNGramTokenFilter() throws Exception {
 		String s = "국제공항";
@@ -722,29 +718,30 @@ public class TestIndexerAndSearcher {
 		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
 		int minGram = 2;
 		int maxGram = s.length();
-		TokenFilter f = new EdgeNGramTokenFilter(Version.LUCENE_47, t, minGram, maxGram); // front! back is deprecated.
-		
+		TokenFilter f = new EdgeNGramTokenFilter(Version.LUCENE_47, t, minGram,
+				maxGram); // front! back is deprecated.
+
 		CharTermAttribute charTermAtt;
 		f.reset();
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("국제", charTermAtt.toString()); // <-- correct.
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("국제공", charTermAtt.toString());
-		
+
 		assertTrue(f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("국제공항", charTermAtt.toString()); // <-- correct.
-		
+
 		// but the missing of "공항" has made.
-		
+
 		assertFalse("-->", f.incrementToken());
 		charTermAtt = f.getAttribute(CharTermAttribute.class);
 		assertEquals("", charTermAtt.toString());
-		
+
 		f.close();
 	}
 

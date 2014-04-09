@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.LuceneTestCase;
+import org.junit.Ignore;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -34,6 +35,7 @@ import org.apache.lucene.util.LuceneTestCase;
  * random-sorted each and took a 100k sample.
  * otherwise we are working with 37.3% test coverage
  */
+@Ignore
 public class TestCoverageHack extends LuceneTestCase {
   
   public void test() throws Exception {

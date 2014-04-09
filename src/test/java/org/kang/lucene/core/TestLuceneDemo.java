@@ -22,9 +22,11 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.LuceneTestCase;
 import org.apache.lucene.util.Version;
+import org.junit.Ignore;
 
+@Ignore
 public class TestLuceneDemo extends LuceneTestCase {
-
+	
 	public void testDemo() throws IOException {
 		Directory directory;
 		{

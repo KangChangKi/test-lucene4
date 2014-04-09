@@ -17,8 +17,6 @@ package org.apache.lucene.analysis.ko.dic;
  * limitations under the License.
  */
 
-import org.apache.lucene.util.LuceneTestCase;
-
 import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.EOGAN;
 import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.EOMI2;
 import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.JOSA1;
@@ -32,8 +30,12 @@ import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.YNPMA;
 import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.YNPNA;
 import static org.apache.lucene.analysis.ko.dic.SyllableFeatures.hasFeature;
 
+import org.apache.lucene.codecs.Codec;
+import org.apache.lucene.util.LuceneTestCase;
+import org.junit.Before;
+
 public class TestSyllableFeatures extends LuceneTestCase {
-  
+
   public void testGa() {
     assertTrue(hasFeature('가', JOSA1));
     assertTrue(hasFeature('가', JOSA2));

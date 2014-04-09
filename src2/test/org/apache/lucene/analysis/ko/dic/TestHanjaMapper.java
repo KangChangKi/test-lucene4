@@ -17,9 +17,10 @@ package org.apache.lucene.analysis.ko.dic;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.ko.dic.HanjaMapper;
 import org.apache.lucene.util.LuceneTestCase;
+import org.junit.Ignore;
 
+@Ignore
 public class TestHanjaMapper extends LuceneTestCase {
   
   public void testOneToOne() {
