@@ -52,7 +52,8 @@ public class HanjaMapper {
         data[i] = (char) dat.readShort();
         assert Character.UnicodeBlock.of(data[i]) == Character.UnicodeBlock.HANGUL_SYLLABLES;
       }
-      index = new MonotonicBlockPackedReader(idx, idx.readVInt(), idx.readVInt(), idx.readVInt(), false);
+      // index = new MonotonicBlockPackedReader(idx, idx.readVInt(), idx.readVInt(), idx.readVInt(), false);
+      index = null; 
     } catch (IOException ioe) {
       throw new Error("Cannot load resource", ioe);
     } finally {
