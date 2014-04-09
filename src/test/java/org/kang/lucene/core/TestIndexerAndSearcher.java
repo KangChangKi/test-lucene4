@@ -22,6 +22,8 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.cjk.CJKBigramFilter;
 import org.apache.lucene.analysis.core.UpperCaseFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
+import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -46,6 +48,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.tartarus.snowball.SnowballProgram;
 
 public class TestIndexerAndSearcher {
 
@@ -534,6 +537,13 @@ public class TestIndexerAndSearcher {
 		}
 	}
 
+	// 1. remove stop words
+	// 2. remove prefixes and suffixes
+	// 3. apply EdgeNGramFilter(including original word) or morphological analysis
+	// 4. apply synonyms
+	// 5. apply sound-like filter(FuzzyFilter)
+	// 6. map consonants
+	
 	@Ignore
 	@Test
 	public void testSynonymFilter_2() throws Exception {
@@ -572,11 +582,93 @@ public class TestIndexerAndSearcher {
 
 		f.close();
 	}
-
-	@Ignore
+	
 	@Test
-	public void testSnowball() throws Exception {
-		// TODO
+	public void testSnowball_1() throws Exception {
+		Reader reader = new StringReader("stemming algorithms");
+		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
+		SnowballFilter f = new SnowballFilter(t, "English");
+		
+		CharTermAttribute charTermAtt;
+		f.reset();
+
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("stem", charTermAtt.toString());
+
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("algorithm", charTermAtt.toString());
+
+		assertFalse("-->", f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
+		
+		f.close();
+	}
+	
+	@Test
+	public void testSnowball_2() throws Exception {
+		Reader reader = new StringReader("뛰어 갈까");
+		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
+		
+		/* from EnglishSnowballFilter class:
+		  @Override
+		  public final boolean incrementToken() throws IOException {
+		    if (input.incrementToken()) {
+		      if (!keywordAttr.isKeyword()) {
+		        char termBuffer[] = termAtt.buffer();
+		        final int length = termAtt.length();
+		        stemmer.setCurrent(termBuffer, length);
+		        stemmer.stem();
+		        final char finalTerm[] = stemmer.getCurrentBuffer();
+		        final int newLength = stemmer.getCurrentBufferLength();
+		        if (finalTerm != termBuffer)
+		          termAtt.copyBuffer(finalTerm, 0, newLength);
+		        else
+		          termAtt.setLength(newLength);
+		      }
+		      return true;
+		    } else {
+		      return false;
+		    }
+		  }
+		 */
+		
+		SnowballProgram stemmer = new SnowballProgram() {
+
+			@Override
+			public boolean stem() {
+				if (StringUtils.equals(getCurrent(), "뛰어")) {
+					setCurrent("뛰다");
+					return true;
+				} else if (StringUtils.equals(getCurrent(), "갈까")) {
+					setCurrent("가다");
+					return true;
+				}
+
+				return false;
+			}
+			
+		};
+		SnowballFilter f = new SnowballFilter(t, stemmer);
+		
+		CharTermAttribute charTermAtt;
+		f.reset();
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("뛰다", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("가다", charTermAtt.toString());
+		
+		assertFalse("-->", f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
+		
+		f.close();
 	}
 
 	@Ignore
