@@ -22,7 +22,8 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.cjk.CJKBigramFilter;
 import org.apache.lucene.analysis.core.UpperCaseFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter;
+import org.apache.lucene.analysis.ngram.NGramTokenFilter;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
@@ -671,10 +672,80 @@ public class TestIndexerAndSearcher {
 		f.close();
 	}
 
-	@Ignore
 	@Test
-	public void testEdgeNGram() throws Exception {
-		// TODO
+	public void testNGramTokenFilter() throws Exception {
+		String s = "국제공항";
+		Reader reader = new StringReader(s);
+		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
+		int minGram = 2;
+		int maxGram = s.length();
+		TokenFilter f = new NGramTokenFilter(Version.LUCENE_47, t, minGram, maxGram);
+		
+		CharTermAttribute charTermAtt;
+		f.reset();
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("국제", charTermAtt.toString()); // <-- correct.
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("국제공", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("국제공항", charTermAtt.toString()); // <-- correct.
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("제공", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("제공항", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("공항", charTermAtt.toString()); // <-- correct.
+		
+		assertFalse("-->", f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
+		
+		f.close();
+	}
+	
+	@Test
+	public void testEdgeNGramTokenFilter() throws Exception {
+		String s = "국제공항";
+		Reader reader = new StringReader(s);
+		Tokenizer t = new WhitespaceTokenizer(Version.LUCENE_47, reader);
+		int minGram = 2;
+		int maxGram = s.length();
+		TokenFilter f = new EdgeNGramTokenFilter(Version.LUCENE_47, t, minGram, maxGram); // front! back is deprecated.
+		
+		CharTermAttribute charTermAtt;
+		f.reset();
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("국제", charTermAtt.toString()); // <-- correct.
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("국제공", charTermAtt.toString());
+		
+		assertTrue(f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("국제공항", charTermAtt.toString()); // <-- correct.
+		
+		// but the missing of "공항" has made.
+		
+		assertFalse("-->", f.incrementToken());
+		charTermAtt = f.getAttribute(CharTermAttribute.class);
+		assertEquals("", charTermAtt.toString());
+		
+		f.close();
 	}
 
 	public void assertTotalHitCount(int expected) {
